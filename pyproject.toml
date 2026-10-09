@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "khammoon"
+version = "0.1.0"
+description = "Thai monomorpheme (คำมูล) segmenter: a 4 MB character model that runs on CPU"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "Apache-2.0 (code); CC-BY-NC-SA-4.0 (bundled model weights)"}
+dependencies = ["numpy>=1.21"]
+classifiers = [
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Natural Language :: Thai",
+    "Topic :: Text Processing :: Linguistic",
+]
+
+[project.optional-dependencies]
+onnx = ["onnxruntime>=1.15"]
+train = ["torch>=2.1", "huggingface_hub", "onnx"]
+baselines = ["pythainlp>=5", "attacut", "nlpo3"]
+test = ["pytest"]
+
+[project.scripts]
+khammoon = "khammoon.cli:main"
+
+[tool.setuptools]
+packages = ["khammoon"]
+
+[tool.setuptools.package-data]
+khammoon = ["model/model.onnx", "model/weights.npz", "model/vocab.json", "model/meta.json", "model/LICENSE"]

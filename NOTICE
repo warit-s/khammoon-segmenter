@@ -1,0 +1,18 @@
+khammoon
+Copyright 2026 The khammoon authors
+
+The source code in this repository is licensed under the Apache License,
+Version 2.0 (see LICENSE).
+
+The trained model weights in khammoon/model/ (model.onnx, weights.npz) are
+licensed separately under Creative Commons Attribution-NonCommercial-ShareAlike
+4.0 International (see khammoon/model/LICENSE), because the model was trained on
+data released under NonCommercial terms:
+  - BEST2009 corpus, NECTEC (CC BY-NC-SA 3.0)
+  - WangchanThaiInstruct, VISTEC/AIResearch (per row CC BY-NC 4.0 / CC BY-SA 4.0)
+
+This product includes software derived from PyThaiNLP
+(https://github.com/PyThaiNLP/pythainlp), licensed under the Apache License,
+Version 2.0: the Thai Character Cluster rules in khammoon/tcc.py
+(Theeramunkong et al. 2000; TCC by Jakkrit TeCho, grammar by Wittawat
+Jitkrittum, Python code by Korakot Chaovavanich).

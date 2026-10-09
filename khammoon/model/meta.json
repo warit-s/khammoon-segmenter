@@ -1,0 +1,8 @@
+{
+ "run": "runs/c2_rel",
+ "ckpt": "last.pt",
+ "arch": "bilstm",
+ "model_kw": {},
+ "win": 256,
+ "threshold": 0.5
+}
