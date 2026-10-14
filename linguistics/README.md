@@ -17,7 +17,7 @@ the monomorpheme (คำมูล) definition set out here.
   A sequential decision procedure (structural chunks → non-Thai / punctuation / symbols →
   Thai-character handling → the คำมูล-vs-compound decision across five categories +
   pronunciation test), with the atomic-integrity constraint
-  (`''.join(tokenized.split('|')) == raw_text`) and 149 worked examples (102 in the rules + 47 few-shot exemplars).
+  (`''.join(tokenized.split('|')) == raw_text`) and 151 worked examples (104 in the rules + 47 few-shot exemplars).
   Every example satisfies the atomic-integrity constraint (five inconsistent examples were
   corrected on 2026-10-06; see the git history).
 
