@@ -14,8 +14,12 @@ Apply these steps sequentially for every input.
 
 **Step 1: Structural-level segmentation**
 Split the text by syntactic/functional chunks. Preserve whitespace exactly.
-Input: ลลิษา มโนบาล
-Output: ลลิษา| |มโนบาล
+
+Input: แม่ฝากฉันซื้อปลา แต่ตลาดปิด
+Output: แม่|ฝาก|ฉัน|ซื้อ|ปลา| |แต่|ตลาด|ปิด
+
+Input: ลลิษา มโนบาลเป็นไอดอลสาวชาวไทย
+Output: ลลิษา| |มโนบาล|เป็น|ไอดอล|สาว|ชาว|ไทย
 
 Input: ว้าย นั่นใคร
 Output: ว้าย| |นั่น|ใคร
@@ -43,11 +47,9 @@ Output: ว้าย| |นั่น|ใคร
         Output: 3)| |นาง|สมร
         Input: บทความที่ (๒) ระบุว่า
         Output: บท|ความ|ที่| |(๒)| |ระบุ|ว่า
-    * Mathematical/chemical formulas
-        Input: Ca(OH)2 + CO2 ---> CaCO3 + H2O + heat
-        Output: Ca(OH)2| |+| |CO2| |--->| |CaCO3| |+| |H2O| |+| |heat
-        Input: [(18*67)+15]-17^2 = ~42.22
-        Output: [|(|18|*|67|)|+|15|]|-|17|^|2| |=| |~|42.22
+    * Chemical compounds
+	    Input: Ca(OH)2 + CO2
+	    Output: Ca(OH)2| |+| |CO2
 
 * **SPLIT (Separate into individual tokens):**
     * Foreign-language text (split on whitespace)
@@ -57,22 +59,30 @@ Output: ว้าย| |นั่น|ใคร
         Output: the| |4th| |generation
         Input: People's Alliance for Democracy
         Output: People's| |Alliance| |for| |Democracy
+        Input: That’s bad
+        Output: That’s| |bad
     * Punctuation (parentheses, quotes)
         Input: บดินทรเดชา (สิงห์ สิงหเสนี)
         Output: บดินทรเดชา| |(|สิงห์| |สิงหเสนี|)
         Input: เขาร้องว่า “ช่วยด้วย”
         Output: เขา|ร้อง|ว่า| |“|ช่วย|ด้วย|”
     * Symbols (%, #, etc.) separated from adjacent text
-        Input: อัตราความเร็วเพิ่มขึ้น 25.50%
-        Output: อัตรา|ความ|เร็ว|เพิ่ม|ขึ้น| |25.50|%
+        Input: มีขยะเพิ่มเป็น 25.50%
+        Output: มี|ขยะ|เพิ่ม|เป็น| |25.50|%
         Input: #วันหยุด #ทะเล
         Output: #|วัน|หยุด| |#|ทะเล
         Input: ไม่มีอีกแล้ว.... เงินเก็บ
         Output: ไม่|มี|อีก|แล้ว|.|.|.|.| |เงิน|เก็บ
-        Input: บริษัท Yahoo! มีมูลค่า $300,000-400,000
-        Output: บริษัท| |Yahoo|!| |มี|มูล|ค่า| |$|300,000|-|400,000
+        Input: บริษัท Yahoo! มีกำไร $300,000-400,000
+        Output: บริษัท| |Yahoo|!| |มี|กำไร| |$|300,000|-|400,000
         Input: ลดราคา 25%
         Output: ลด|ราคา| |25|%
+    * Mathematical/chemical symbols (+, -, =, ~, ^, --->, etc.) separated from adjacent text
+        Input: Ca(OH)2 + CO2 ---> CaCO3 + H2O + heat
+        Output: Ca(OH)2| |+| |CO2| |--->| |CaCO3| |+| |H2O| |+| |heat
+        Input: [(18*67)+15]-17^2 = ~42.22
+        Output: [|(|18|*|67|)|+|15|]|-|17|^|2| |=| |~|42.22
+
 
 **Step 3: Thai-character handling**
 * **3.1 Assume correct orthography:** Segment based on intended valid spelling.
@@ -132,8 +142,12 @@ Evaluate each remaining chunk. Stop at the first category that applies.
     Output: ซุป|กิมจิ
     Input: คุณค่าของราชวังเก่า
     Output: คุณ|ค่า|ของ|ราช|วัง|เก่า
-    Input: เคมีภัณฑ์อุตสาหกรรม
-    Output: เคมี|ภัณฑ์|อุตสาหกรรม
+    Input: อุตสาหกรรมเคมีภัณฑ์
+    Output: อุตสาหกรรม|เคมี|ภัณฑ์
+    Input: เวชระเบียน
+    Output: เวช|ระเบียน
+    Input: พลเมือง
+    Output: พล|เมือง
 
 * **Category 2: All Pali-Sanskrit**
     * True สมาส-สนธิ (Meaning flows back->front): KEEP.
@@ -145,11 +159,6 @@ Evaluate each remaining chunk. Stop at the first category that applies.
         Output: พุทธศาสนา
         Input: มหาบัณฑิต
         Output: มหาบัณฑิต
-    * สมาสเทียม (Contains non P-S parts): SPLIT.
-        Input: เวชระเบียน
-        Output: เวช|ระเบียน
-        Input: พลเมือง
-        Output: พล|เมือง
     * Thai-syntax order (front->back) or คำซ้อน: SPLIT.
         Input: ศาสนาพุทธ
         Output: ศาสนา|พุทธ
@@ -180,7 +189,7 @@ Evaluate each remaining chunk. Stop at the first category that applies.
         Output: มะพร้าว
         Input: กินมะม่วงกะมะพร้าว
         Output: กิน|มะม่วง|กะ|มะพร้าว
-    * **4-B Meaningless affix syllables: SPLIT (unless it is a fused prefix like ระ-, กระ-).**
+    * **4-B Meaningless affix syllables: SPLIT (unless it is a fused prefix like ระ-, กระ-, ประ-).**
         Input: ตาเตอ
         Output: ตา|เตอ
         Input: ร้อนเริ้น
