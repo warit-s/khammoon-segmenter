@@ -1,7 +1,7 @@
 # Reproducing khammoon 0.1.0
 
 All commands run from the repository root with the training extras installed
-(`pip install -e ".[train]"`). Training steps need a CUDA GPU (we used one H100; each run takes
+(`pip install -e ".[train]"`). Training steps need a CUDA GPU (each run takes
 minutes); everything else runs on a CPU. `HF_TOKEN` is needed while the dataset is private.
 
 ```bash
