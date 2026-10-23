@@ -26,9 +26,8 @@ the monomorpheme (คำมูล) definition set out here.
 - **Training data.** `linguistic_guideline.md` was the prompt contract for the two-pass LLM
   segmenter (Qwen3-30B-A3B) that produced the silver training data, and the annotation spec
   for the three human annotators of the reference sets. The LLM segmenter itself belongs to an
-  earlier pipeline and is not part of this repository; its outputs are on Hugging Face
-  (`Warit/thai-monomorpheme-llm-annotated`), the human labels in `Warit/thai-monomorpheme-reference`
-  and, re-split for release, in `Warit/khammoon-data` (golden-dev = BEST2009, golden-test = Wangchan).
+  earlier pipeline and is not part of this repository; its outputs and the human labels are
+  released in `typhoon-ai/khammoon-data` (development set = BEST2009, test set = Wangchan).
 - **Rules taken directly from the guideline.** Step 2 (foreign text is split on whitespace
   only; heading markers such as `(๒)` are kept) is applied to the silver data by
   `scripts/relabel_silver.py --patterns`.

@@ -87,7 +87,7 @@ The model has ~1.06M parameters (4.2 MB).
 
 ## Data
 
-All data are released as [`Warit/khammoon-data`](https://huggingface.co/datasets/Warit/khammoon-data).
+All data are released as [`typhoon-ai/khammoon-data`](https://huggingface.co/datasets/typhoon-ai/khammoon-data).
 
 | config | source | role |
 |---|---|---|
@@ -161,7 +161,7 @@ Every step can be rerun from the released data; see [`scripts/README.md`](script
 |---|---|
 | code (all `.py` files, scripts, tests) | [Apache-2.0](LICENSE) |
 | model weights (`khammoon/model/model.onnx`, `weights.npz`) | [CC BY-NC-SA 4.0](khammoon/model/LICENSE); no commercial use, because the training data carry NonCommercial terms |
-| data (`Warit/khammoon-data`) | per row, inherited from the source: CC BY-NC-SA 3.0 (BEST2009), CC BY-NC 4.0 or CC BY-SA 4.0 (WangchanThaiInstruct) |
+| data (`typhoon-ai/khammoon-data`) | per row, inherited from the source: CC BY-NC-SA 3.0 (BEST2009), CC BY-NC 4.0 or CC BY-SA 4.0 (WangchanThaiInstruct) |
 
 The wheel installed by pip bundles the model weights, so that part falls under CC BY-NC-SA 4.0;
 see [NOTICE](NOTICE).

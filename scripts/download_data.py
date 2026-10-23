@@ -1,4 +1,4 @@
-"""Download Warit/khammoon-data and lay it out for the training pipeline.
+"""Download typhoon-ai/khammoon-data and lay it out for the training pipeline.
 
 Writes
   data/silver/{best2009,wangchan}.jsonl       training text with the ORIGINAL LLM labels (`tokens_llm`)
@@ -10,7 +10,7 @@ Writes
   data/ref2/wangchan_test.jsonl               test set (Wangchan reference, 2,000) -- evaluation only
   data/llm/{best2009,wangchan}.jsonl          the silver-producing LLM pipeline's output on golden-dev / golden-test
 
-usage: python scripts/download_data.py [--repo Warit/khammoon-data] [--revision main]
+usage: python scripts/download_data.py [--repo typhoon-ai/khammoon-data] [--revision main]
 (set HF_TOKEN while the dataset is private)
 """
 import argparse
@@ -42,7 +42,7 @@ def dump(it, path):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--repo", default="Warit/khammoon-data")
+    ap.add_argument("--repo", default="typhoon-ai/khammoon-data")
     ap.add_argument("--revision", default="main")
     ap.add_argument("--out", default=str(OUT))
     args = ap.parse_args()

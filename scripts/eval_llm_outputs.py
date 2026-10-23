@@ -1,6 +1,6 @@
 """Score the LLM pipeline that produced the silver labels on golden-dev and golden-test.
 
-Reads its saved outputs from data/llm/ (config `llm_outputs` of Warit/khammoon-data, laid out by
+Reads its saved outputs from data/llm/ (config `llm_outputs` of typhoon-ai/khammoon-data, laid out by
 scripts/download_data.py) and uses the same metric as the rest of the repository.
 
 usage: python scripts/eval_llm_outputs.py
