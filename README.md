@@ -33,7 +33,7 @@ pip install ".[train]"   # to train or evaluate (torch, pythainlp, ...)
 | `numpy` | numpy | ~13k characters/s |
 
 The default `backend="auto"` uses `onnx` when onnxruntime is installed and `numpy` otherwise.
-Both backends produce the same segmentation on every sentence of the dev set.
+Both backends produce the same segmentation on every sentence of the development set.
 
 ## Usage
 
@@ -61,8 +61,9 @@ Thai Character Clusters, so no token is misspelled (for example, none starts wit
 The evaluation set is the **test set**: the Wangchan reference, 2,000 documents segmented by three
 trained annotators following the guideline and adjudicated (Fleiss κ 0.991). It was never used
 during development: not for training, model selection or threshold choice. The metric is
-boundary precision / recall / F1, micro-averaged, ignoring boundaries adjacent to whitespace
-(those are fixed by the input, and the gold annotation treats runs of whitespace inconsistently).
+boundary precision / recall / F1, pooled over all boundaries, ignoring boundaries adjacent to
+whitespace (those are fixed by the input, and the human annotation treats runs of whitespace
+inconsistently). Confidence intervals and the full discussion are in the technical report.
 
 | method | precision | recall | F1 |
 |---|---|---|---|
@@ -72,16 +73,18 @@ boundary precision / recall / F1, micro-averaged, ignoring boundaries adjacent t
 | AttaCut | 0.981 | 0.874 | 0.925 |
 | syllable segmentation (PyThaiNLP `syllable_tokenize`) | 0.821 | 0.991 | 0.898 |
 | unigram Viterbi over the LLM-label lexicon | 0.975 | 0.881 | 0.925 |
-| Qwen3-30B-A3B two-pass LLM pipeline that produced the training labels (prompt v6-3, T=0.2) | 0.975 | 0.948 | 0.962 |
-| BiLSTM trained on uncorrected LLM labels, plus guideline rules | 0.981 | 0.965 | 0.973 |
+| Qwen3-30B-A3B two-pass LLM segmenter that produced the training labels | 0.975 | 0.948 | 0.962 |
+| the same BiLSTM trained on the uncorrected LLM labels | 0.977 | 0.948 | 0.962 |
 | **khammoon 0.1.0** | **0.992** | **0.993** | **0.992** |
 
 `newmm`, deepcut and AttaCut segment into BEST2009 *words*, not monomorphemes, so their recall is
 low; the table measures distance to the monomorpheme definition, not the quality of those tools
 at their own task (`scripts/baselines_test.py`). The Qwen3-30B-A3B row scores the saved outputs of
-the same LLM pipeline that labelled the training text, run on the test set texts
+the same LLM segmenter that labelled the training text, run on the test set texts
 (`scripts/eval_llm_outputs.py`). khammoon is about 30,000 times smaller than that LLM, runs on a
-CPU, and makes about 5 times fewer errors (1 − F1: 0.008 vs 0.038).
+CPU, and makes about 5 times fewer errors (1 − F1: 0.008 vs 0.038). Models trained on its output
+perform on par with those trained on word segmenters on POS tagging, NER and sentiment
+classification; see the technical report.
 
 The model has ~1.06M parameters (4.2 MB).
 
@@ -92,15 +95,15 @@ All data are released as [`typhoon-ai/khammoon-data`](https://huggingface.co/dat
 | config | source | role |
 |---|---|---|
 | `llm_labelled` | BEST2009 train + WangchanThaiInstruct train, segmented by an LLM (Qwen3-30B-A3B, two passes following the guideline) and then corrected; 180,206 documents, 70M characters | training |
-| `dev` | BEST2009 reference, 2,252 sentences, human-annotated | label correction, fine-tuning, checkpoint and threshold selection; split into devtrain (1,484) and devval (768) |
-| `test` | Wangchan reference, 2,000 documents, human-annotated | evaluation only |
+| `dev` | development set: BEST2009 reference, 2,252 sentences, human-labelled | label correction, fine-tuning, model and threshold selection; split into dev-train (1,484) and dev-val (768), marked `devtrain` / `devval` in the `dev_split` field |
+| `test` | test set: Wangchan reference, 2,000 documents, human-labelled | evaluation only |
 
 Training rows whose text also occurs in either human set were removed before training. The
 cross-domain split (news, novels and encyclopedia text for development; instruction data in
 finance, legal, medical and retail for testing) is deliberate.
 
 **All of the data is open, for developers and researchers to build on.** Besides the model, we
-release the human-labelled dev and test sets (a common benchmark with a fixed protocol), the 70M
+release the human-labelled development and test sets (a common benchmark with a fixed protocol), the 70M
 characters of LLM-labelled text with both the original LLM labels and the corrected ones (training
 data for new segmenters, and a record of where an LLM annotator goes wrong), and the LLM's outputs
 on the reference sets (the strongest baseline, reproducible without a GPU). Use them to train your
@@ -114,25 +117,26 @@ tokenization; the licenses of the source texts apply (see [License](#license)).
    at whitespace edges; a boundary is placed where the predicted probability exceeds the
    threshold (0.5).
 2. **Label correction, round 1.** The LLM systematically under-splits frequent Thai compounds
-   (`สินค้า`, `กฎหมาย`, `ข้อมูล`). We build a table of strings that the dev set devtrain always
+   (`สินค้า`, `กฎหมาย`, `ข้อมูล`). We build a table of strings that dev-train always
    segments the same way (at least twice) and rewrite every occurrence in the LLM labels to match, and we
    merge foreign-script spans that the guideline keeps whole (`COVID-19`, `People's`) and
    parenthesised heading markers (`(๒)`).
 3. **Train and fine-tune.** A BiLSTM (character embedding → convolutions with kernels 3/5/7 →
    2-layer BiLSTM, 256-character windows) is trained on the round-1 labels and fine-tuned on
-   the dev set devtrain.
+   dev-train.
 4. **Label correction, round 2.** The fine-tuned model re-segments the whole LLM-labelled corpus;
    only boundaries between two Thai letters are taken from it, all others keep the round-1
-   labels. This spreads the dev set conventions over the 70M characters of LLM-labelled text.
+   labels. This spreads the human conventions over the 70M characters of LLM-labelled text.
 5. **Mixed fine-tuning.** A new model is trained on the round-2 labels and fine-tuned with half
-   of every batch from the dev set and half from the LLM-labelled text, so it does not forget what the dev set
-   lacks (the dev set is 2009 text without `COVID-19` and splits every hyphen). The mixing ratio
-   (0% or 50% LLM-labelled data, chosen by a rule fixed beforehand: the largest LLM-labelled share whose devval
-   F1 is within 0.0005 of the best), the number of steps and the threshold were selected on
-   the dev set devval; the release model was then trained on all of the dev set with those values.
+   of every batch from dev-train and half from the LLM-labelled text, so it does not forget what
+   the development set lacks (it is 2009 text without `COVID-19` and splits every hyphen). The
+   mixing ratio (0% or 50% LLM-labelled data, chosen by a rule fixed beforehand: the largest
+   LLM-labelled share whose dev-val F1 is within 0.0005 of the best), the number of steps and the
+   threshold were selected on dev-val; the released model was then fine-tuned on the whole
+   development set with those values.
 6. **Export** to ONNX (`model.onnx`) and to raw weights (`weights.npz`) for the numpy backend.
 
-| the dev set devval F1 | before fine-tuning | gold-only fine-tuning | 50% LLM-labelled fine-tuning |
+| dev-val F1 | before fine-tuning | human-only fine-tuning | 50% LLM-labelled fine-tuning |
 |---|---|---|---|
 | LLM labels after round 1 | 0.9916 | 0.9970 | 0.9957 |
 | LLM labels after round 2 | 0.9955 | 0.9974 | 0.9972 (selected) |
@@ -145,11 +149,11 @@ Every step can be rerun from the released data; see [`scripts/README.md`](script
   web text yet.
 - Most remaining errors are rare proper names and transliterations, and Pali–Sanskrit
   compounds that are over-split.
-- Golden-test was evaluated three times. Each change of method was motivated by the dev set or by
-  examples outside the test set, never by test results: (1) F1 0.9916; (2) after fixing an
-  inference bug found through a README example (text-final characters were mis-segmented
-  because training documents are newline-delimited, and batches contained padding), 0.9917;
-  (3) after label-correction round 2 and mixed fine-tuning (prompted by `COVID-19` being
+- The test set was evaluated three times. Each change of method was motivated by the
+  development set or by examples outside the test set, never by test results: (1) F1 0.9916;
+  (2) after fixing an inference bug found through a README example (text-final characters were
+  mis-segmented because training documents are newline-delimited, and batches contained padding),
+  0.9917; (3) after label-correction round 2 and mixed fine-tuning (prompted by `COVID-19` being
   split), P 0.9917 / R 0.9928 / F1 0.9923, the numbers in the table.
 - The developer had seen error analyses on the Wangchan reference in an earlier experiment,
   before this split was fixed. The foreign-script merge rule follows Step 2 of the guideline but
@@ -165,6 +169,21 @@ Every step can be rerun from the released data; see [`scripts/README.md`](script
 
 The wheel installed by pip bundles the model weights, so that part falls under CC BY-NC-SA 4.0;
 see [NOTICE](NOTICE).
+
+## Citation
+
+If you use khammoon, the guideline or the data, please cite the technical report:
+
+```bibtex
+@techreport{khammoon2026,
+  title       = {khammoon: From a Linguistic Guideline to a Thai Monomorpheme Segmenter},
+  author      = {Sirichotedumrong, Warit and Na-Thalang, Adisai and Phatcharoen, Kritsadha and
+                 Wittayasakpan, Chanakan and Pipatanakul, Kunat},
+  institution = {Typhoon, SCB DataX},
+  year        = {2026},
+  url         = {https://github.com/warit-s/khammoon-segmenter}
+}
+```
 
 ## Credits
 

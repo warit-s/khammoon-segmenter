@@ -17,6 +17,12 @@ classifiers = [
     "Topic :: Text Processing :: Linguistic",
 ]
 
+[project.urls]
+Homepage = "https://github.com/warit-s/khammoon-segmenter"
+Repository = "https://github.com/warit-s/khammoon-segmenter"
+Model = "https://huggingface.co/typhoon-ai/khammoon"
+Data = "https://huggingface.co/datasets/typhoon-ai/khammoon-data"
+
 [project.optional-dependencies]
 onnx = ["onnxruntime>=1.15"]
 train = ["torch>=2.1", "huggingface_hub", "onnx"]
