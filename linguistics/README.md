@@ -1,8 +1,8 @@
-# Linguistic basis for monomorphemic segmentation
+# Linguistic basis for morpheme segmentation
 
 These documents define what a correct segmentation *is* for this project. Everything
 else in the repo (the `khammoon` segmenter, its training data and benchmarks) is downstream of
-the monomorpheme (คำมูล) definition set out here.
+the morpheme (คำมูล) definition set out here. ("Morpheme" is used in the sense of Thai grammar; the guideline file itself says "monomorphemic unit", and its wording is kept as it was when the labels were produced.)
 
 ## Files
 
@@ -10,7 +10,7 @@ the monomorpheme (คำมูล) definition set out here.
   Thai word-formation taxonomy (คำมูล, คำประสม, คำซ้อน, คำซ้ำ, คำสมาส/สนธิ), the factors
   that make boundaries ambiguous (internal cohesion, semantic transparency, subunit count,
   cross-boundary sharing, sound change, context), and the two operational tests for
-  monomorpheme-hood: the **substitution test** (การหาคำมาแทนที่) and the **insertion test**
+  morpheme-hood: the **substitution test** (การหาคำมาแทนที่) and the **insertion test**
   (การหาคำมาแทรก).
 
 - **`linguistic_guideline.md`** — the operational annotation spec compiled from the above.

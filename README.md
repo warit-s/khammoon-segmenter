@@ -1,7 +1,8 @@
-# khammoon — Thai monomorpheme segmenter
+# khammoon — Thai morpheme segmenter
 
-khammoon splits Thai text into **monomorphemes** (คำมูล, *kham mun*): the smallest units that still
-carry meaning on their own, as defined by the annotation guideline in [`linguistics/`](linguistics/).
+khammoon splits Thai text into **morphemes** in the sense of Thai grammar (คำมูล, *khammoon*): the
+smallest units that still carry meaning on their own, as defined by the annotation guideline in
+[`linguistics/`](linguistics/).
 It is a 4 MB character-level model that runs on a CPU with nothing but `numpy`; no GPU and no LLM.
 
 ```python
@@ -11,7 +12,7 @@ segment("นักเรียนโรงเรียนสอนคนตา�
 # ['นัก', 'เรียน', 'โรง', 'เรียน', 'สอน', 'คน', 'ตา', 'บอด', 'ทำ', 'งาน', 'ขะมัก', 'เขม้น']
 ```
 
-## What a monomorpheme is
+## What a morpheme is
 
 Ordinary Thai word segmenters keep compounds together; khammoon splits them down to their
 meaningful parts. `สินค้า` ("goods") is the compound สิน (wealth) + ค้า (trade), so it becomes
@@ -77,8 +78,8 @@ inconsistently). Confidence intervals and the full discussion are in the technic
 | the same BiLSTM trained on the uncorrected LLM labels | 0.977 | 0.948 | 0.962 |
 | **khammoon 0.1.0** | **0.992** | **0.993** | **0.992** |
 
-`newmm`, deepcut and AttaCut segment into BEST2009 *words*, not monomorphemes, so their recall is
-low; the table measures distance to the monomorpheme definition, not the quality of those tools
+`newmm`, deepcut and AttaCut segment into BEST2009 *words*, not morphemes, so their recall is
+low; the table measures distance to the morpheme definition, not the quality of those tools
 at their own task (`scripts/baselines_test.py`). The Qwen3-30B-A3B row scores the saved outputs of
 the same LLM segmenter that labelled the training text, run on the test set texts
 (`scripts/eval_llm_outputs.py`). khammoon is about 30,000 times smaller than that LLM, runs on a
@@ -176,9 +177,9 @@ If you use khammoon, the guideline or the data, please cite the technical report
 
 ```bibtex
 @techreport{khammoon2026,
-  title       = {khammoon: From a Linguistic Guideline to a Thai Monomorpheme Segmenter},
-  author      = {Sirichotedumrong, Warit and Na-Thalang, Adisai and Phatcharoen, Kritsadha and
-                 Wittayasakpan, Chanakan and Pipatanakul, Kunat},
+  title       = {khammoon: From a Linguistic Guideline to a Thai Morpheme Segmenter},
+  author      = {Sirichotedumrong, Warit and Na-Thalang, Adisai and Wittayasakpan, Chanakan and
+                 Phatcharoen, Kritsadha and Pipatanakul, Kunat},
   institution = {Typhoon, SCB DataX},
   year        = {2026},
   url         = {https://github.com/warit-s/khammoon-segmenter}

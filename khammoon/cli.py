@@ -13,7 +13,7 @@ from .segmenter import Segmenter
 
 
 def main(argv: list[str] | None = None) -> int:
-    ap = argparse.ArgumentParser(prog="khammoon", description="Thai monomorpheme (คำมูล) segmenter")
+    ap = argparse.ArgumentParser(prog="khammoon", description="Thai morpheme (คำมูล) segmenter")
     ap.add_argument("text", nargs="*", help="text to segment (default: read stdin line by line)")
     ap.add_argument("--sep", default="|", help="separator placed between tokens (default: |)")
     ap.add_argument("--threshold", type=float, default=None, help="boundary probability threshold")

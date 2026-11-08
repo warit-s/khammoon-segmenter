@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "khammoon"
 version = "0.1.0"
-description = "Thai monomorpheme (คำมูล) segmenter: a 4 MB character model that runs on CPU"
+description = "Thai morpheme (คำมูล) segmenter: a 4 MB character model that runs on CPU"
 readme = "README.md"
 requires-python = ">=3.9"
 license = {text = "Apache-2.0 (code); CC-BY-NC-SA-4.0 (bundled model weights)"}

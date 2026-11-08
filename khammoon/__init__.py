@@ -1,4 +1,4 @@
-"""khammoon — Thai monomorpheme (คำมูล) segmentation with a small CPU model."""
+"""khammoon — Thai morpheme (คำมูล) segmentation with a small CPU model."""
 from .segmenter import Segmenter, segment
 
 __version__ = "0.1.0"

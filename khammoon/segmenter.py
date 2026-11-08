@@ -28,7 +28,7 @@ def _windows(n: int):
 
 
 class Segmenter:
-    """Thai monomorpheme (คำมูล) segmenter.
+    """Thai morpheme (คำมูล) segmenter.
 
     >>> seg = Segmenter()
     >>> seg("โรงเรียนสอนคนตาบอด")
