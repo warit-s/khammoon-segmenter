@@ -5,6 +5,8 @@ smallest units that still carry meaning on their own, as defined by the annotati
 [`linguistics/`](linguistics/).
 It is a 4 MB character-level model that runs on a CPU with nothing but `numpy`; no GPU and no LLM.
 
+**Package:** [`pip install khammoon`](https://pypi.org/project/khammoon/) · **Model:** [`typhoon-ai/khammoon`](https://huggingface.co/typhoon-ai/khammoon) · **Data:** [`typhoon-ai/khammoon-data`](https://huggingface.co/datasets/typhoon-ai/khammoon-data)
+
 ```python
 from khammoon import segment
 
@@ -166,7 +168,7 @@ Every step can be rerun from the released data; see [`scripts/README.md`](script
 |---|---|
 | code (all `.py` files, scripts, tests) | [Apache-2.0](LICENSE) |
 | model weights (`khammoon/model/model.onnx`, `weights.npz`) | [CC BY-NC-SA 4.0](khammoon/model/LICENSE); no commercial use, because the training data carry NonCommercial terms |
-| data (`typhoon-ai/khammoon-data`) | per row, inherited from the source: CC BY-NC-SA 3.0 (BEST2009), CC BY-NC 4.0 or CC BY-SA 4.0 (WangchanThaiInstruct) |
+| data ([`typhoon-ai/khammoon-data`](https://huggingface.co/datasets/typhoon-ai/khammoon-data)) | per row, inherited from the source: CC BY-NC-SA 3.0 (BEST2009), CC BY-NC 4.0 or CC BY-SA 4.0 (WangchanThaiInstruct) |
 
 The wheel installed by pip bundles the model weights, so that part falls under CC BY-NC-SA 4.0;
 see [NOTICE](NOTICE).
