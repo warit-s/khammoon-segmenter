@@ -5,16 +5,17 @@ All commands run from the repository root with the training extras installed
 minutes); everything else runs on a CPU. `HF_TOKEN` is needed while the dataset is private.
 
 ```bash
-# 1. data: silver (original LLM labels), golden-dev (BEST2009), golden-test (Wangchan)
+# 1. data: LLM labels, development set (BEST2009), test set (Wangchan), annotator agreement
 python scripts/download_data.py
+python scripts/annotator_agreement.py      # Fleiss' kappa and pairwise F1 of the three annotators
 
-# 2. relabel round 1: convention table from golden-dev devtrain + guideline Step-2 merges
+# 2. relabel round 1: convention table from dev-train + guideline Step-2 merges
 python scripts/relabel_silver.py --patterns --gold data/ref2/best_devtrain.jsonl --out data/silver_c1
 python scripts/prep_silver.py --inputs data/silver_c1/best2009.jsonl,data/silver_c1/wangchan.jsonl --name silver_c1
 python scripts/prep_silver.py --inputs data/ref2/best_devtrain.jsonl --name best_devtrain --val-frac 0
 python scripts/prep_silver.py --inputs data/ref2/best_all.jsonl --name best_all --val-frac 0
 
-# 3. model on round-1 silver, fine-tuned on golden-dev devtrain
+# 3. model on round-1 labels, fine-tuned on dev-train
 python scripts/train_char.py --arch bilstm --name c1 --data silver_c1 --steps 6000 --lr 2e-3 --eval-every 1000
 python scripts/train_char.py --arch bilstm --name c1_ft --data best_devtrain --init runs/c1/best.pt \
     --steps 1200 --warmup 100 --lr 3e-4 --batch 64 --eval-every 100
@@ -23,7 +24,7 @@ python scripts/train_char.py --arch bilstm --name c1_ft --data best_devtrain --i
 python scripts/self_label_silver.py runs/c1_ft --thr 0.45 --base data/silver_c1 --out data/silver_c2
 python scripts/prep_silver.py --inputs data/silver_c2/best2009.jsonl,data/silver_c2/wangchan.jsonl --name silver_c2
 
-# 5. model on round-2 silver; choose the mixing ratio / threshold on golden-dev devval
+# 5. model on round-2 labels; choose the mixing ratio / threshold on dev-val
 python scripts/train_char.py --arch bilstm --name c2 --data silver_c2 --steps 6000 --lr 2e-3 --eval-every 1000
 python scripts/train_char.py --arch bilstm --name c2_ftmix5 --data best_devtrain --aux silver_c2 --aux-frac 0.5 \
     --init runs/c2/best.pt --steps 1200 --warmup 100 --lr 3e-4 --batch 64 --eval-every 100

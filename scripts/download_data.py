@@ -8,7 +8,9 @@ Writes
   data/ref2/best_devtrain.jsonl               dev rows with dev_split == devtrain (1,484)
   data/ref2/best_devval.jsonl                 dev rows with dev_split == devval (768)
   data/ref2/wangchan_test.jsonl               test set (Wangchan reference, 2,000) -- evaluation only
-  data/llm/{best2009,wangchan}.jsonl          the silver-producing LLM pipeline's output on golden-dev / golden-test
+  data/llm/{best2009,wangchan}.jsonl          the LLM segmenter's output on the development / test texts
+  data/ref2/annotator_agreement/{best2009,wangchan}.jsonl
+                                              the three annotators' independent segmentations (400 + 400)
 
 usage: python scripts/download_data.py [--repo typhoon-ai/khammoon-data] [--revision main]
 (set HF_TOKEN while the dataset is private)
@@ -60,6 +62,9 @@ def main():
     dump(rows(args.repo, "test/wangchan.jsonl", args.revision), out / "ref2/wangchan_test.jsonl")
     for cfg in ("best2009", "wangchan"):
         dump(rows(args.repo, f"llm_outputs/{cfg}.jsonl", args.revision), out / f"llm/{cfg}.jsonl")
+    for cfg in ("best2009", "wangchan"):
+        dump(rows(args.repo, f"annotator_agreement/{cfg}.jsonl", args.revision),
+             out / f"ref2/annotator_agreement/{cfg}.jsonl")
 
 
 if __name__ == "__main__":
