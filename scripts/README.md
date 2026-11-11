@@ -29,12 +29,12 @@ python scripts/train_char.py --arch bilstm --name c2 --data silver_c2 --steps 60
 python scripts/train_char.py --arch bilstm --name c2_ftmix5 --data best_devtrain --aux silver_c2 --aux-frac 0.5 \
     --init runs/c2/best.pt --steps 1200 --warmup 100 --lr 3e-4 --batch 64 --eval-every 100
 
-# 6. release model: all of golden-dev + 50% silver per batch, fixed steps; export
+# 6. released model: the whole development set + 50% LLM-labelled per batch, fixed steps; export
 python scripts/train_char.py --arch bilstm --name c2_rel --data best_all --aux silver_c2 --aux-frac 0.5 \
     --init runs/c2/best.pt --steps 1000 --warmup 100 --lr 3e-4 --batch 64 --eval-every 1000
 python scripts/export_onnx.py runs/c2_rel --ckpt last.pt --thr 0.5
 
-# 7. evaluation on golden-test (once) and baselines
+# 7. evaluation on the test set (once) and baselines
 python -c "import json; from khammoon import Segmenter; from khammoon.metrics import evaluate; \
 r=[json.loads(l) for l in open('data/ref2/wangchan_test.jsonl')]; t=[x['text'] for x in r]; \
 print(evaluate(t, Segmenter().segment_batch(t), [x['tokens'] for x in r]))"
