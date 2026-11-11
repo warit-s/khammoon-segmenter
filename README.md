@@ -5,7 +5,7 @@ smallest units that still carry meaning on their own, as defined by the annotati
 [`linguistics/`](linguistics/).
 It is a 4 MB character-level model that runs on a CPU with nothing but `numpy`; no GPU and no LLM.
 
-**Package:** [`pip install khammoon`](https://pypi.org/project/khammoon/) · **Model:** [`typhoon-ai/khammoon`](https://huggingface.co/typhoon-ai/khammoon) · **Data:** [`typhoon-ai/khammoon-data`](https://huggingface.co/datasets/typhoon-ai/khammoon-data)
+**Paper:** [arXiv:2611.13012](https://arxiv.org/abs/2611.13012) · **Package:** [`pip install khammoon`](https://pypi.org/project/khammoon/) · **Model:** [`typhoon-ai/khammoon`](https://huggingface.co/typhoon-ai/khammoon) · **Data:** [`typhoon-ai/khammoon-data`](https://huggingface.co/datasets/typhoon-ai/khammoon-data)
 
 ```python
 from khammoon import segment
@@ -144,7 +144,9 @@ tokenization; the licenses of the source texts apply (see [License](#license)).
 | LLM labels after round 1 | 0.9916 | 0.9970 | 0.9957 |
 | LLM labels after round 2 | 0.9955 | 0.9974 | 0.9972 (selected) |
 
-Every step can be rerun from the released data; see [`scripts/README.md`](scripts/README.md). The technical report describing this work is linked from the model card on Hugging Face.
+Every step can be rerun from the released data; see [`scripts/README.md`](scripts/README.md). The
+technical report, [arXiv:2611.13012](https://arxiv.org/abs/2611.13012), describes the method and
+experiments in full.
 
 ## Limitations
 
@@ -175,16 +177,19 @@ see [NOTICE](NOTICE).
 
 ## Citation
 
-If you use khammoon, the guideline or the data, please cite the technical report:
+If you use khammoon, the guideline or the data, please cite the technical report,
+[arXiv:2611.13012](https://arxiv.org/abs/2611.13012):
 
 ```bibtex
-@techreport{khammoon2026,
-  title       = {khammoon: From a Linguistic Guideline to a Thai Morpheme Segmenter},
-  author      = {Sirichotedumrong, Warit and Na-Thalang, Adisai and Wittayasakpan, Chanakan and
-                 Phatcharoen, Kritsadha and Pipatanakul, Kunat},
-  institution = {Typhoon, SCB DataX},
-  year        = {2026},
-  url         = {https://github.com/warit-s/khammoon-segmenter}
+@misc{khammoon2026,
+  title         = {khammoon: From a Linguistic Guideline to a Thai Morpheme Segmenter},
+  author        = {Sirichotedumrong, Warit and Na-Thalang, Adisai and Wittayasakpan, Chanakan and
+                   Phatcharoen, Kritsadha and Pipatanakul, Kunat},
+  year          = {2026},
+  eprint        = {2611.13012},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://arxiv.org/abs/2611.13012}
 }
 ```
 
